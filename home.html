@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorFlow Federated</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @font-face {
+            font-family: myfont;
+            src: url(Rubik-Light.ttf);
+        }
+
+        * {
+            font-family: myfont;
+            font-weight: 900;
+        }
+
+        p {
+            font-size: 35px;
+        }
+
+        select {
+            height: 30px;
+            width: 150px;
+
+        }
+
+        option {
+
+            color: green;
+        }
+
+        button {
+
+            width: 60px;
+            height: 30px;
+            margin-left: 5px;
+            background-color: green;
+            border-radius: 2px;
+        }
+
+        #loss,
+        #Optimizer,
+        #Metrics {
+            height: 20px;
+
+        }
+
+        #centerdiv.active {
+            top: 50%;
+            visibility: visible;
+            opacity: 1;
+            transition: 1s;
+        }
+
+        #centerdiv {
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            /* Set your desired width */
+            height: 300px;
+            /* Set your desired height */
+            background-color: rgb(67, 148, 175);
+
+
+            /* Align text vertically */
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.5s;
+
+        }
+
+        .blurred {
+            filter: blur(5px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #span2 {
+            visibility: hidden;
+        }
+
+        #span2.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        #span {
+            visibility: hidden;
+        }
+
+        #span.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        #last_span {
+            visibility: hidden;
+        }
+
+        #last_span.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        #last_span2 {
+            visibility: hidden;
+        }
+
+        #last_span2.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        #my_span {
+            visibility: hidden;
+        }
+
+        #my_span.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        #my_span2 {
+            visibility: hidden;
+        }
+
+        #my_span2.active {
+            margin-left: 10px;
+            visibility: visible;
+        }
+
+        i {
+            color: green;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p>TensorFlow Federated</p>
+    </div>
+    <div>
+        <h2>Architecture</h2>
+    </div>
+    <div><select name="Architecture" id="archi">
+            <option value="Dense">Dense</option>
+            <option value="Convolutional">Convolutional</option>
+            <option value="Recurrent">Recurrent </option>
+            <option value="BatchNormalization">Batch Normalization </option>
+
+        </select><button id="button">Add</button></div>
+    <div id="Architecture">
+        <h6>No Layer Selected</h6>
+    </div>
+
+    <div id="centerdiv">
+
+
+    </div>
+
+
+    <div>
+        <p>Loss</p>
+    </div>
+    <div id="loss"><select name="loss" id="loss_select">
+            <option value="MSE">Mean Squared Error (MSE)</option>
+            <option value="BinaryCrossentropy">Binary Crossentropy</option>
+            <option value="CategoricalCrossentropy">Categorical Crossentropy </option>
+            <option value="SparseCategoricalCrossentropy">Sparse Categorical Crossentropy </option>
+            <option value="HuberLoss">Huber Loss</option>
+            <option value="CustomLossFunctions">Custom Loss Functions</option>
+
+        </select><button id="button2">Valider</button>
+        <span id="span"><i class="fa-solid fa-circle-check"></i></span>
+        <span id="span2"><i class="fa-solid fa-ban"></i></span>
+    </div>
+
+    <div>
+        <p>Optimizer</p>
+    </div>
+    <div id="Optimizer">
+        <select name="optimizer" id="optimizer">
+            <option value="GradientDescentOptimizer">GradientDescentOptimizer</option>
+            <option value="SGD">SGD</option>
+            <option value="MomentumOptimizer">MomentumOptimizer</option>
+            <option value="AdagradOptimizer">AdagradOptimizer</option>
+            <option value="RMSPropOptimizer">RMSPropOptimizer</option>
+            <option value="AdamOptimizer">AdamOptimizer</option>
+            <option value="AdadeltaOptimizer">AdadeltaOptimizer</option>
+            <option value="AdagradDAOptimizer">AdagradDAOptimizer</option>
+            <option value="FtrlOptimizer">FtrlOptimizer</option>
+
+
+        </select><button id="button3">Valider</button>
+        <span id="my_span"><i class="fa-solid fa-circle-check"></i></span>
+        <span id="my_span2"><i class="fa-solid fa-ban"></i></span>
+    </div>
+    <div>
+        <p>Metrics</p>
+    </div>
+    <div id="Metrics">
+        <select name="metrics" id="metrics">
+            <option value="Accuracy">Accuracy</option>
+            <option value="Precision">Precision</option>
+            <option value="Recall">Recall </option>
+            <option value="F1Score">F1 Score</option>
+            <option value="ROC">ROC Curve and AUC</option>
+            <option value="MAE">Mean Absolute Error (MAE)</option>
+            <option value="MSE">Mean Squared Error (MSE)</option>
+            <option value="R">R-squared (Coefficient of Determination)</option>
+            <option value="FtrlOptimizer">FtrlOptimizer</option>
+
+
+        </select>
+        <button id="button5">Add</button>
+        <button id="button4">valider</button>
+        <span id="last_span"><i class="fa-solid fa-circle-check"></i></span>
+        <span id="last_span2"><i class="fa-solid fa-ban"></i></span>
+        <div>
+            <ul id="metrics_list">
+
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var metrics = [];
+        var layers = [];
+        document.getElementById("button5").addEventListener("click", function () {
+
+            if (!metrics.includes(document.getElementById("metrics").value)) {
+                metrics.push(document.getElementById("metrics").value);
+                var listItem = document.createElement("li");
+
+
+                listItem.textContent = document.getElementById("metrics").value;
+                var i = document.createElement("i");
+
+                i.classList.add("fa-solid", "fa-trash");
+                i.style.marginLeft = "20px";
+                i.addEventListener("click", function () {
+                    if (document.getElementById("button5").disabled == false) {
+                        document.getElementById("metrics_list").removeChild(listItem);
+                        metrics = metrics.filter(function (item) {
+                            return item !== listItem.textContent;
+                        });
+                    }
+
+                });
+                listItem.append(i);
+
+
+
+
+                document.getElementById("metrics_list").appendChild(listItem);
+            }
+
+
+        });
+
+        document.getElementById("last_span2").addEventListener("click", function () {
+            document.getElementById("last_span2").classList.toggle("active");
+            document.getElementById("last_span").classList.toggle("active");
+            document.getElementById("button4").disabled = false;
+            document.getElementById("button5").disabled = false;
+            document.getElementById("metrics").disabled = false;
+
+        });
+        document.getElementById("button4").addEventListener("click", function () {
+            document.getElementById("last_span2").classList.toggle("active");
+            document.getElementById("last_span").classList.toggle("active");
+            this.disabled = true;
+            document.getElementById("button5").disabled = true;
+            document.getElementById("metrics").disabled = true;
+
+
+
+        });
+
+
+        document.getElementById("span2").addEventListener("click", function () {
+            document.getElementById("span").classList.toggle("active");
+            document.getElementById("span2").classList.toggle("active");
+            document.getElementById("button2").disabled = false;
+            document.getElementById("loss_select").disabled = false;
+        });
+        document.getElementById("button2").addEventListener("click", function () {
+            document.getElementById("span").classList.toggle("active");
+            document.getElementById("span2").classList.toggle("active");
+            this.disabled = true;
+            document.getElementById("loss_select").disabled = true;
+
+
+
+        });
+        document.getElementById("my_span2").addEventListener("click", function () {
+            document.getElementById("my_span2").classList.toggle("active");
+            document.getElementById("my_span").classList.toggle("active");
+            document.getElementById("button3").disabled = false;
+            document.getElementById("optimizer").disabled = false;
+        });
+        document.getElementById("button3").addEventListener("click", function () {
+            document.getElementById("my_span").classList.toggle("active");
+            document.getElementById("my_span2").classList.toggle("active");
+            this.disabled = true;
+            document.getElementById("optimizer").disabled = true;
+        });
+
+        document.getElementById("button").addEventListener("click", function () {
+            var div = document.getElementById("centerdiv");
+            div.classList.toggle("active");
+
+            var allTags = document.getElementsByTagName("*");
+
+
+            var tagsArray = Array.from(allTags);
+
+            tagsArray.forEach(function (tag) {
+
+                if (tag.tagName.toLowerCase() !== "body" && tag.id.toLowerCase() !== "centerdiv" && tag.parentNode.nodeName.toLowerCase() == "body") {
+                    tag.classList.toggle("blurred");
+                }
+            });
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+            var mydiv1 = document.createElement("div");
+            mydiv1.style.marginTop = "15px";
+
+            mydiv1.innerText = document.getElementById("archi").value + " Layer";
+            div.append(mydiv1);
+            
+            if (document.getElementById("archi").value == "Dense") {
+
+                var mydiv2 = document.createElement("div");
+                var span = document.createElement("span");
+                span.textContent = "units";
+                mydiv2.appendChild(span);
+                mydiv2.style.padding = "20px";
+                var textfield = document.createElement("input");
+                textfield.style.marginLeft = "5px";
+                mydiv2.append(textfield);
+                div.append(mydiv2);
+                var mydiv = document.createElement("div");
+
+                var span = document.createElement("span");
+                span.textContent = "Activation";
+                var list = document.createElement("select");
+                list.style.marginLeft = "10px";
+                var option = document.createElement("option");
+                option.text = "Linear";
+                list.appendChild(option);
+
+                var option = document.createElement("option");
+                option.text = "Sigmoid";
+                list.appendChild(option);
+
+                var option = document.createElement("option");
+                option.text = "tanh";
+                list.appendChild(option);
+
+
+
+                mydiv.append(span);
+                mydiv.append(list);
+
+
+                div.append(mydiv);
+                var span = document.createElement("span");
+                span.textContent = "Input Shape";
+                var mydiv = document.createElement("div");
+                mydiv.style.marginTop = "20px";
+                mydiv.append(span);
+                var textfield = document.createElement("input");
+                textfield.style.marginLeft = "10px";
+                mydiv.append(textfield);
+                var button = document.createElement("button");
+                button.textContent = "Valider";
+                button.style.marginTop = "20px";
+                button.style.borderRadius = "5px";
+                button.style.height = "40px";
+                button.addEventListener("click", function () {
+                    document.getElementById("centerdiv").classList.toggle("active");
+                    var allTags = document.getElementsByTagName("*");
+
+
+                    var tagsArray = Array.from(allTags);
+
+                    tagsArray.forEach(function (tag) {
+
+                        if (tag.tagName.toLowerCase() !== "body" && tag.id.toLowerCase() !== "centerdiv" && tag.parentNode.nodeName.toLowerCase() == "body") {
+                            tag.classList.toggle("blurred");
+                        }
+                    });
+                });
+                div.append(mydiv);
+                div.append(button);
+                var button = document.createElement("button");
+            var i = document.createElement("i");
+            i.classList.add("fa-solid", "fa-house");
+            button.appendChild(i);
+            i.style.color = "red";
+            button.style.backgroundColor = "transparent";
+            mydiv1.append(button);
+            
+            button.onclick = function () {
+                document.getElementById("centerdiv").classList.toggle("active");
+                var allTags = document.getElementsByTagName("*");
+
+
+                var tagsArray = Array.from(allTags);
+
+                tagsArray.forEach(function (tag) {
+
+                    if (tag.tagName.toLowerCase() !== "body" && tag.id.toLowerCase() !== "centerdiv" && tag.parentNode.nodeName.toLowerCase() == "body") {
+                        tag.classList.toggle("blurred");
+                    }
+                });
+            }
+            button.style.marginTop="10px";
+            div.append(button);
+                layers.push("Dense");
+
+            }
+
+
+
+
+
+
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>
